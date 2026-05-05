@@ -1,0 +1,904 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS Flashcards</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600&display=swap");
+
+    :root {
+      --bg: #f6f1e8;
+      --surface: #fffdf8;
+      --text: #2b241d;
+      --muted: #7b6d5d;
+      --border: #dfcfb8;
+      --primary: #315e52;
+      --primary-soft: #e9f2ef;
+      --easy: #2f8a5f;
+      --medium: #af7725;
+      --hard: #aa4d42;
+      --shadow: 0 12px 30px rgba(78, 52, 31, 0.1);
+      --radius: 16px;
+      --focus: #4f7a6f;
+      --surface-soft: #faf4eb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255, 255, 255, 0.58) 0, transparent 34%),
+        radial-gradient(circle at 100% 100%, rgba(49, 94, 82, 0.12) 0, transparent 40%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    .app {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, var(--surface) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .header {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+    }
+
+    .title {
+      margin: 0;
+      font-family: Fraunces, "Times New Roman", serif;
+      font-size: 34px;
+      letter-spacing: -0.018em;
+      color: #33291f;
+      text-wrap: balance;
+    }
+
+    .subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #fffdf9 0%, var(--surface-soft) 100%);
+    }
+
+    .pill.easy { color: var(--easy); border-color: #afd8bf; background: #f0f8f3; }
+    .pill.medium { color: var(--medium); border-color: #ead2a5; background: #fff8ef; }
+    .pill.hard { color: var(--hard); border-color: #e9beb8; background: #fff4f2; }
+
+    .layout {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+
+    h2 {
+      margin: 0 0 12px 0;
+      font-size: 18px;
+      font-family: Fraunces, "Times New Roman", serif;
+      font-weight: 600;
+    }
+
+    .grid-2 {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    input, textarea, select, button {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      font-size: 14px;
+      margin-top: 5px;
+      background: #fffefb;
+      color: var(--text);
+    }
+
+    input, textarea, select {
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    }
+
+    input:focus, textarea:focus, select:focus, button:focus {
+      outline: 3px solid rgba(79, 122, 111, 0.28);
+      outline-offset: 0;
+      border-color: var(--focus);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 84px;
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #3b6f60 0%, var(--primary) 100%);
+      color: #fff;
+      border-color: var(--primary);
+      box-shadow: 0 8px 18px rgba(49, 94, 82, 0.26);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(180deg, #f5faf8 0%, var(--primary-soft) 100%);
+      border-color: #b4d2c7;
+      color: #2f5d50;
+    }
+
+    .btn-danger {
+      background: #fff4f2;
+      border-color: #e8c2bc;
+      color: #934035;
+    }
+
+    .controls {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 2fr 1.2fr 1fr auto;
+      margin-bottom: 12px;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .toolbar button {
+      margin-top: 0;
+    }
+
+    .controls button {
+      width: auto;
+      white-space: nowrap;
+      align-self: end;
+      padding-inline: 14px;
+      margin-top: 0;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .clear-btn {
+      width: auto;
+      margin-top: 5px;
+      padding: 10px;
+      min-width: 44px;
+      font-weight: 800;
+    }
+
+    .board {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .column {
+      background: linear-gradient(180deg, #fffaf2 0%, var(--surface-soft) 100%);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      min-height: 280px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .column h3 {
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .count-mini {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .column.easy h3 { color: var(--easy); }
+    .column.medium h3 { color: var(--medium); }
+    .column.hard h3 { color: var(--hard); }
+
+    .card {
+      background: linear-gradient(180deg, #fffefb 0%, #fffaf3 100%);
+      border: 1px solid #e9dcc8;
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: 0 6px 16px rgba(86, 58, 29, 0.08);
+      display: grid;
+      gap: 8px;
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .question {
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .answer {
+      border-top: 1px dashed var(--border);
+      padding-top: 8px;
+      color: var(--text);
+    }
+
+    .flip-stage {
+      position: relative;
+      perspective: 1000px;
+      min-height: 56px;
+      overflow: visible;
+    }
+
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      will-change: transform;
+      transform: rotateY(0deg);
+    }
+
+    .card.flipped .flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-face {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      /* Don't set bottom: keeps intrinsic height for measurement in JS. */
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .flip-front {
+      transform: rotateY(0deg);
+    }
+
+    .flip-back {
+      transform: rotateY(180deg);
+    }
+
+    .actions {
+      display: grid;
+      gap: 6px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .move-buttons {
+      display: grid;
+      gap: 6px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .empty {
+      padding: 18px 10px;
+      text-align: center;
+      border: 1px dashed #d8c9b4;
+      border-radius: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      background: #fffaf4;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    .section-title {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    details {
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      background: linear-gradient(180deg, #fffefb 0%, #fffaf2 100%);
+    }
+
+    summary {
+      cursor: pointer;
+      list-style: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+      user-select: none;
+    }
+
+    summary h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    summary::before {
+      content: "▸";
+      color: var(--muted);
+      font-size: 12px;
+      transform: translateY(1px);
+    }
+
+    details[open] summary::before {
+      content: "▾";
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .controls {
+        grid-template-columns: 1fr;
+      }
+
+      .board {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .field-row {
+        grid-template-columns: 1fr auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="panel header">
+      <div>
+        <h1 class="title">CS Flashcards Studio</h1>
+        <p class="subtitle" id="sessionInfo">0 cards shown · 0 revealed</p>
+      </div>
+      <div class="stats">
+        <span id="countAll" class="pill">0 total</span>
+        <span id="countEasy" class="pill easy">0 easy</span>
+        <span id="countMedium" class="pill medium">0 medium</span>
+        <span id="countHard" class="pill hard">0 hard</span>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="panel">
+        <details id="addSection">
+          <summary><h2>Add Flashcard</h2></summary>
+          <form id="cardForm" style="margin-top:12px;">
+            <label>Question
+              <textarea id="question" required placeholder="What does HTTP stand for?"></textarea>
+            </label>
+            <label>Answer
+              <textarea id="answer" required placeholder="HyperText Transfer Protocol"></textarea>
+            </label>
+            <div class="grid-2">
+              <label>Category
+                <input id="category" type="text" placeholder="Networking" required>
+              </label>
+              <label>Difficulty
+                <select id="difficulty" required>
+                  <option value="Easy">Easy</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+              </label>
+            </div>
+            <button class="btn-primary" type="submit">Save Flashcard</button>
+          </form>
+        </details>
+      </section>
+
+      <section class="panel">
+        <h2>Study Board</h2>
+        <p class="section-title">Find cards</p>
+        <div class="controls">
+          <label>Search
+            <div class="field-row">
+              <input id="searchText" type="text" placeholder="question, answer, or category">
+              <button id="clearSearch" class="clear-btn" type="button" aria-label="Clear search">x</button>
+            </div>
+          </label>
+          <label>Category
+            <div class="field-row">
+              <input id="categoryFilter" type="text" placeholder="all categories">
+              <button id="clearCategory" class="clear-btn" type="button" aria-label="Clear category">x</button>
+            </div>
+          </label>
+          <label>Sort
+            <select id="sortBy">
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="az">A-Z Category</option>
+            </select>
+          </label>
+          <button id="showAll" type="button">Reset</button>
+        </div>
+        <p class="section-title">Quick actions</p>
+        <div class="toolbar">
+          <button id="openAdd" type="button">Add card</button>
+          <button id="showRecent" class="btn-secondary" type="button">Newest 3</button>
+          <button id="revealAll" class="btn-secondary" type="button">Reveal shown</button>
+          <button id="hideAll" type="button">Hide shown</button>
+        </div>
+        <div id="activeFilters" class="small"></div>
+        <div class="small">Tip: press <strong>/</strong> to search, <strong>n</strong> to add a card.</div>
+
+        <div class="board">
+          <div class="column easy">
+            <h3>Easy <span id="easyShown" class="count-mini">0 shown</span></h3>
+            <div id="easyList"></div>
+          </div>
+          <div class="column medium">
+            <h3>Medium <span id="mediumShown" class="count-mini">0 shown</span></h3>
+            <div id="mediumList"></div>
+          </div>
+          <div class="column hard">
+            <h3>Hard <span id="hardShown" class="count-mini">0 shown</span></h3>
+            <div id="hardList"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+  <script>
+    const STORAGE_KEY = "flashcards_sqlite_db_v2";
+    let db = null;
+    const state = {
+      searchText: "",
+      categoryFilter: "",
+      sortBy: "newest",
+      limitRecent: null,
+      revealMap: {},
+      currentShownIds: []
+    };
+
+    function escapeHtml(text) {
+      const value = String(text || "");
+      return value
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function persistDb() {
+      if (!db) return;
+      const binaryArray = db.export();
+      const bytes = Array.from(binaryArray, (byte) => String.fromCharCode(byte)).join("");
+      localStorage.setItem(STORAGE_KEY, btoa(bytes));
+    }
+
+    function loadDbBufferFromStorage() {
+      const base64 = localStorage.getItem(STORAGE_KEY);
+      if (!base64) return null;
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i += 1) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return bytes;
+    }
+
+    function runSelect(sqlText, params = []) {
+      const result = db.exec(sqlText, params);
+      if (!result.length) return [];
+      return result[0].values.map((row) => ({
+        id: row[0],
+        question: row[1],
+        answer: row[2],
+        category: row[3],
+        difficulty: row[4],
+        created_at: row[5]
+      }));
+    }
+
+    function getAllCards() {
+      return runSelect(
+        "SELECT id, question, answer, category, difficulty, created_at FROM flashcards ORDER BY id DESC;"
+      );
+    }
+
+    function applyFilters(cards) {
+      let filtered = cards.filter((card) => {
+        const search = state.searchText.toLowerCase();
+        const category = state.categoryFilter.toLowerCase();
+        const joined = `${card.question} ${card.answer} ${card.category}`.toLowerCase();
+        const passSearch = !search || joined.includes(search);
+        const passCategory = !category || card.category.toLowerCase().includes(category);
+        return passSearch && passCategory;
+      });
+
+      if (state.sortBy === "oldest") {
+        filtered.sort((a, b) => a.id - b.id);
+      } else if (state.sortBy === "az") {
+        filtered.sort((a, b) => a.category.localeCompare(b.category));
+      } else {
+        filtered.sort((a, b) => b.id - a.id);
+      }
+
+      if (typeof state.limitRecent === "number") {
+        filtered = filtered.slice(0, state.limitRecent);
+      }
+
+      return filtered;
+    }
+
+    function updateStats(cards) {
+      const easy = cards.filter((c) => c.difficulty === "Easy").length;
+      const medium = cards.filter((c) => c.difficulty === "Medium").length;
+      const hard = cards.filter((c) => c.difficulty === "Hard").length;
+      document.getElementById("countAll").textContent = `${cards.length} total`;
+      document.getElementById("countEasy").textContent = `${easy} easy`;
+      document.getElementById("countMedium").textContent = `${medium} medium`;
+      document.getElementById("countHard").textContent = `${hard} hard`;
+    }
+
+    function cardTemplate(card) {
+      const isVisible = Boolean(state.revealMap[card.id]);
+      const flippedClass = isVisible ? "flipped" : "";
+      return `
+        <article class="card ${flippedClass}" data-id="${card.id}">
+          <div class="card-meta">
+            <span>#${card.id} · ${escapeHtml(card.category)}</span>
+            <span>${escapeHtml(card.created_at)}</span>
+          </div>
+          <div class="flip-stage">
+            <div class="flip-inner">
+              <div class="flip-face flip-front">
+                <div class="question">${escapeHtml(card.question)}</div>
+              </div>
+              <div class="flip-face flip-back">
+                <div class="answer">${escapeHtml(card.answer)}</div>
+              </div>
+            </div>
+          </div>
+          <div class="actions">
+            <button data-action="toggle-answer" data-id="${card.id}" class="btn-secondary" type="button">
+              ${isVisible ? "Hide" : "Reveal"}
+            </button>
+            <button data-action="delete" data-id="${card.id}" class="btn-danger" type="button">Delete</button>
+          </div>
+          <div class="move-buttons">
+            <button data-action="move" data-id="${card.id}" data-value="Easy" type="button">Easy</button>
+            <button data-action="move" data-id="${card.id}" data-value="Medium" type="button">Medium</button>
+            <button data-action="move" data-id="${card.id}" data-value="Hard" type="button">Hard</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function updateSessionInfo() {
+      const shown = state.currentShownIds.length;
+      const revealed = state.currentShownIds.filter((id) => state.revealMap[id]).length;
+      document.getElementById("sessionInfo").textContent = `${shown} cards shown · ${revealed} revealed`;
+    }
+
+    function updateFilterSummary() {
+      const bits = [];
+      if (state.searchText.trim()) bits.push(`search: "${state.searchText.trim()}"`);
+      if (state.categoryFilter.trim()) bits.push(`category: "${state.categoryFilter.trim()}"`);
+      if (state.sortBy !== "newest") bits.push(`sort: ${state.sortBy}`);
+      if (typeof state.limitRecent === "number") bits.push(`limit: newest ${state.limitRecent}`);
+      document.getElementById("activeFilters").textContent = bits.length ? `Active filters: ${bits.join(" · ")}` : "Active filters: none";
+    }
+
+    function syncFlipHeights() {
+      // Faces are absolutely positioned, so the grid layout needs help reserving space.
+      const stages = document.querySelectorAll(".flip-stage");
+      for (const stage of stages) {
+        const front = stage.querySelector(".flip-front");
+        const back = stage.querySelector(".flip-back");
+        if (!front || !back) continue;
+
+        const frontH = Math.ceil(front.getBoundingClientRect().height || front.scrollHeight || 0);
+        const backH = Math.ceil(back.getBoundingClientRect().height || back.scrollHeight || 0);
+        const maxH = Math.max(frontH, backH);
+        stage.style.height = `${Math.max(maxH, 1)}px`;
+      }
+    }
+
+    function updateCardFlip(id) {
+      const card = document.querySelector(`.card[data-id="${id}"]`);
+      if (!card) return;
+
+      const isVisible = Boolean(state.revealMap[id]);
+      card.classList.toggle("flipped", isVisible);
+
+      const toggleBtn = card.querySelector(`button[data-action="toggle-answer"][data-id="${id}"]`);
+      if (toggleBtn) toggleBtn.textContent = isVisible ? "Hide" : "Reveal";
+
+      updateSessionInfo();
+    }
+
+    function render() {
+      const allCards = getAllCards();
+      updateStats(allCards);
+      const list = applyFilters(allCards);
+      state.currentShownIds = list.map((card) => card.id);
+      const buckets = { Easy: [], Medium: [], Hard: [] };
+      for (const card of list) {
+        if (!buckets[card.difficulty]) continue;
+        buckets[card.difficulty].push(cardTemplate(card));
+      }
+      document.getElementById("easyList").innerHTML = buckets.Easy.length
+        ? buckets.Easy.join("")
+        : '<div class="empty">No easy cards match this filter.</div>';
+      document.getElementById("mediumList").innerHTML = buckets.Medium.length
+        ? buckets.Medium.join("")
+        : '<div class="empty">No medium cards match this filter.</div>';
+      document.getElementById("hardList").innerHTML = buckets.Hard.length
+        ? buckets.Hard.join("")
+        : '<div class="empty">No hard cards match this filter.</div>';
+      document.getElementById("easyShown").textContent = `${buckets.Easy.length} shown`;
+      document.getElementById("mediumShown").textContent = `${buckets.Medium.length} shown`;
+      document.getElementById("hardShown").textContent = `${buckets.Hard.length} shown`;
+      updateSessionInfo();
+      updateFilterSummary();
+      requestAnimationFrame(syncFlipHeights);
+    }
+
+    function insertCard(question, answer, category, difficulty) {
+      const createdAt = new Date().toISOString().slice(0, 19).replace("T", " ");
+      db.run(
+        "INSERT INTO flashcards (question, answer, category, difficulty, created_at) VALUES (?, ?, ?, ?, ?);",
+        [question, answer, category, difficulty, createdAt]
+      );
+      persistDb();
+    }
+
+    function moveCard(id, difficulty) {
+      db.run("UPDATE flashcards SET difficulty = ? WHERE id = ?;", [difficulty, id]);
+      persistDb();
+    }
+
+    function deleteCard(id) {
+      db.run("DELETE FROM flashcards WHERE id = ?;", [id]);
+      delete state.revealMap[id];
+      persistDb();
+    }
+
+    function resetFilters() {
+      state.searchText = "";
+      state.categoryFilter = "";
+      state.sortBy = "newest";
+      state.limitRecent = null;
+      document.getElementById("searchText").value = "";
+      document.getElementById("categoryFilter").value = "";
+      document.getElementById("sortBy").value = "newest";
+      render();
+    }
+
+    function revealOrHideShownCards(visible) {
+      for (const id of state.currentShownIds) {
+        state.revealMap[id] = visible;
+      }
+      for (const id of state.currentShownIds) {
+        const card = document.querySelector(`.card[data-id="${id}"]`);
+        if (!card) continue;
+        card.classList.toggle("flipped", visible);
+
+        const toggleBtn = card.querySelector(`button[data-action="toggle-answer"][data-id="${id}"]`);
+        if (toggleBtn) toggleBtn.textContent = visible ? "Hide" : "Reveal";
+      }
+      updateSessionInfo();
+      requestAnimationFrame(syncFlipHeights);
+    }
+
+    document.getElementById("cardForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const question = document.getElementById("question").value.trim();
+      const answer = document.getElementById("answer").value.trim();
+      const category = document.getElementById("category").value.trim();
+      const difficulty = document.getElementById("difficulty").value;
+      if (!question || !answer || !category) return;
+      insertCard(question, answer, category, difficulty);
+      state.limitRecent = null;
+      event.target.reset();
+      document.getElementById("addSection").open = false;
+      render();
+    });
+
+    document.getElementById("searchText").addEventListener("input", (event) => {
+      state.searchText = event.target.value;
+      state.limitRecent = null;
+      render();
+    });
+
+    document.getElementById("categoryFilter").addEventListener("input", (event) => {
+      state.categoryFilter = event.target.value;
+      state.limitRecent = null;
+      render();
+    });
+
+    document.getElementById("sortBy").addEventListener("change", (event) => {
+      state.sortBy = event.target.value;
+      render();
+    });
+
+    document.getElementById("showRecent").addEventListener("click", () => {
+      state.limitRecent = 3;
+      state.sortBy = "newest";
+      document.getElementById("sortBy").value = "newest";
+      render();
+    });
+
+    document.getElementById("showAll").addEventListener("click", resetFilters);
+    document.getElementById("clearSearch").addEventListener("click", () => {
+      state.searchText = "";
+      state.limitRecent = null;
+      document.getElementById("searchText").value = "";
+      render();
+    });
+    document.getElementById("clearCategory").addEventListener("click", () => {
+      state.categoryFilter = "";
+      state.limitRecent = null;
+      document.getElementById("categoryFilter").value = "";
+      render();
+    });
+    document.getElementById("openAdd").addEventListener("click", () => {
+      document.getElementById("addSection").open = true;
+      document.getElementById("question").focus();
+    });
+    document.getElementById("revealAll").addEventListener("click", () => {
+      revealOrHideShownCards(true);
+    });
+    document.getElementById("hideAll").addEventListener("click", () => {
+      revealOrHideShownCards(false);
+    });
+
+    document.addEventListener("click", (event) => {
+      const target = event.target.closest("button[data-action]");
+      if (!target) return;
+      const id = Number(target.dataset.id);
+      const action = target.dataset.action;
+      if (!id || !action) return;
+      if (action === "toggle-answer") {
+        state.revealMap[id] = !state.revealMap[id];
+        updateCardFlip(id);
+        requestAnimationFrame(syncFlipHeights);
+        return;
+      } else if (action === "move") {
+        const nextDifficulty = target.dataset.value;
+        if (nextDifficulty) moveCard(id, nextDifficulty);
+      } else if (action === "delete") {
+        deleteCard(id);
+      }
+      render();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      const isTyping = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || "");
+      if (event.key === "/" && !isTyping) {
+        event.preventDefault();
+        document.getElementById("searchText").focus();
+      }
+      if (event.key.toLowerCase() === "n" && !isTyping) {
+        event.preventDefault();
+        document.getElementById("addSection").open = true;
+        document.getElementById("question").focus();
+      }
+    });
+
+    async function initDb() {
+      const SQL = await initSqlJs({
+        locateFile: (file) => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${file}`
+      });
+      const savedBuffer = loadDbBufferFromStorage();
+      db = savedBuffer ? new SQL.Database(savedBuffer) : new SQL.Database();
+      db.run(`CREATE TABLE IF NOT EXISTS flashcards (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        question TEXT NOT NULL,
+        answer TEXT NOT NULL,
+        category TEXT NOT NULL,
+        difficulty TEXT NOT NULL CHECK(difficulty IN ('Easy', 'Medium', 'Hard')),
+        created_at DATETIME NOT NULL
+      );`);
+      persistDb();
+      document.getElementById("addSection").open = false;
+      render();
+    }
+
+    initDb().catch((error) => {
+      console.error("Failed to initialize SQL library:", error);
+      document.getElementById("easyList").innerHTML =
+        '<div class="empty">Could not load SQL library. Check internet and refresh.</div>';
+      document.getElementById("mediumList").innerHTML =
+        '<div class="empty">Could not load SQL library. Check internet and refresh.</div>';
+      document.getElementById("hardList").innerHTML =
+        '<div class="empty">Could not load SQL library. Check internet and refresh.</div>';
+    });
+  </script>
+</body>
+</html>
